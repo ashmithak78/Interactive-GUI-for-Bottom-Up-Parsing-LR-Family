@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>LR Parser Visualizer</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.9/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+
+<header>
+  <h1>Parsing Visualizer</h1>
+  <nav>
+    <button class="tab active">Bottom-Up</button>
+  </nav>
+</header>
+
+<div class="subnav">
+  <button class="subtab active" data-target="lr">LR Parsing</button>
+  <button class="subtab" data-target="op">Operator Precedence</button>
+</div>
+
+
+<section id="lr" class="page">
+
+  <div class="controls">
+    <label>Variant:
+      <select id="variant">
+        <option>LR(0)</option>
+        <option>SLR(1)</option>
+        <option>CLR(1)</option>
+        <option>LALR(1)</option>
+      </select>
+    </label>
+    <label>Example grammar:
+      <select id="preset"></select>
+    </label>
+  </div>
+
+  <div class="inputrow">
+    <textarea id="grammar" rows="6" spellcheck="false"></textarea>
+    <div class="hint">
+      Format: <code>A -&gt; X Y | Z</code><br>
+      Separate symbols with <b>spaces</b>.<br>
+      Empty production: <code>eps</code><br>
+      First line = start symbol.<br>
+      Lowercase/other symbols not on a left side = terminals.
+      <br><br><button id="buildBtn" class="primary">Build</button>
+      <div id="error" class="error"></div>
+    </div>
+  </div>
+
+  <div id="variantNote" class="note"></div>
+
+  <div class="info">
+    <div><h3>Augmented grammar</h3><div id="augmented"></div></div>
+    <div><h3>FIRST / FOLLOW</h3><div id="firstfollow"></div></div>
+  </div>
+
+  <h2>Canonical collection of item sets</h2>
+  <div class="player">
+    <button id="prevBtn">◀ Prev</button>
+    <button id="nextBtn" class="primary">Next Step ▶</button>
+    <button id="allBtn">Run all</button>
+    <button id="resetBtn">Reset</button>
+    <span id="stepNote">Press Build first.</span>
+  </div>
+
+  <div class="main">
+    <div id="graph"></div>
+    <div class="side">
+      <div id="explain" class="explain">Click a state (in graph or list) to see how it was derived.</div>
+      <div id="cards"></div>
+    </div>
+  </div>
+<h2>ACTION / GOTO table</h2>
+<div class="player">
+  <button id="tNextBtn" class="primary">Next cell ▶</button>
+  <button id="tAllBtn">Fill all</button>
+  <button id="tResetBtn">Reset</button>
+</div>
+<div id="tableNote" class="note">Build first.</div>
+<div id="tableOut" class="tablewrap"></div>
+<div id="conflictOut"></div>
+
+<h2>Parse a string</h2>
+<div class="player">
+  <input id="inputStr" size="30" placeholder="e.g.  c d d   (symbols separated by spaces)">
+  <button id="parseBtn" class="primary">Start parsing</button>
+  <button id="pNextBtn">Next step ▶</button>
+  <button id="pAllBtn">Run all</button>
+</div>
+<div id="traceOut" class="tablewrap"></div>
+</section>
+
+<section id="op" class="page" style="display:none">
+
+  <div class="controls">
+    <label>Example grammar:
+      <select id="opPreset"></select>
+    </label>
+  </div>
+
+  <div class="inputrow">
+    <textarea id="opGrammar" rows="5" spellcheck="false"></textarea>
+    <div class="hint">
+      Same format as the LR page: <code>A -&gt; X Y | Z</code>, symbols separated by spaces.<br>
+      An operator grammar has <b>no ε-productions</b> and <b>no two adjacent non-terminals</b>.<br><br>
+      <button id="opBuildBtn" class="primary">Build</button>
+      <div id="opError" class="error"></div>
+    </div>
+  </div>
+
+  <div id="opCheck"></div>
+
+  <h2>LEADING / TRAILING, then precedence relations</h2>
+  <div class="player">
+    <button id="opPrev">◀ Prev</button>
+    <button id="opNext" class="primary">Next Step ▶</button>
+    <button id="opAll">Run all</button>
+    <button id="opReset">Reset</button>
+  </div>
+  <div id="opNote" class="note">Press Build first.</div>
+
+  <div class="info">
+    <div><h3>LEADING / TRAILING</h3><div id="opSets"></div></div>
+    <div><h3>Precedence relation table</h3><div id="opTable" class="tablewrap"></div></div>
+  </div>
+  <div id="opConflict"></div>
+
+  <h2>Parse a string</h2>
+  <div class="player">
+    <input id="opInput" size="30" placeholder="e.g.  id + id * id">
+    <button id="opParseBtn" class="primary">Start parsing</button>
+    <button id="opPNext">Next step ▶</button>
+    <button id="opPAll">Run all</button>
+  </div>
+  <div id="opTrace" class="tablewrap"></div>
+
+</section>
+
+<script src="engine.js"></script>
+<script src="lr.js"></script>
+<script src="app.js"></script>
+<script src="op.js"></script>
+</body>
+</html>
